@@ -1,0 +1,207 @@
+openapi: 3.0.2
+info:
+  title: TCPShield API [WIP]
+  version: '1.0'
+servers:
+  - url: 'https://api.tcpshield.com/v1'
+components:
+  securitySchemes:
+    APIKeyAuth:
+      type: apiKey
+      name: X-API-Key
+      in: header
+    JWTAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+paths:
+  /user:
+    get:
+      description: 'Get current user information (name, phone number, etc)'
+      parameters: []
+      responses:
+        '200':
+          description: OK
+      security:
+        - JWTAuth: []
+    patch:
+      description: Update current user information
+      parameters: []
+      responses:
+        '200':
+          description: OK
+  /user/password:
+    patch:
+      description: Updates the current users password
+      parameters: []
+      responses:
+        '200':
+          description: OK
+  /networks:
+    get:
+      description: Fetch list of available networks
+      parameters: []
+      responses:
+        '200':
+          description: OK
+    post:
+      description: Add new network to the account
+      parameters: []
+      responses:
+        '200':
+          description: OK
+        '403':
+          description: Permission denied add networks
+  '/networks/{networkId}':
+    get:
+      description: Fetch info for a single network
+      parameters:
+        - name: networkId
+          in: path
+          description: Network ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Network not found
+    patch:
+      description: Update information on a network
+      parameters:
+        - name: networkId
+          in: path
+          description: Network ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+        '403':
+          description: Permission denied to update this network
+        '404':
+          description: Network not found
+    delete:
+      description: Delete a network
+      parameters:
+        - name: networkId
+          in: path
+          description: Network ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+        '403':
+          description: Permission denied to delete this network
+        '404':
+          description: Network not found
+  '/networks/{networkId}/domains':
+    get:
+      description: Fetch a list of domains attached to a network
+      parameters:
+        - name: networkId
+          in: path
+          description: Network ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+    post:
+      description: Add a domain to a network
+      parameters:
+        - name: networkId
+          in: path
+          description: Network ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+        '403':
+          description: Permission denied to edit this network
+        '409':
+          description: 'Domain already exists in our system, could be attached to another network'
+  '/networks/{networkId}/domains/{domainId}':
+    get:
+      description: Fetch a single domain
+      parameters:
+        - name: networkId
+          in: path
+          description: Network ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: domainId
+          in: path
+          description: Domain ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Domain not found
+    patch:
+      description: Update a domain attached to a network
+      parameters:
+        - name: networkId
+          in: path
+          description: Network ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: domainId
+          in: path
+          description: Domain ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+        '403':
+          description: Permission denied to edit this domain
+        '404':
+          description: Domain not found
+    delete:
+      description: Delete a domain attached to a network
+      parameters:
+        - name: networkId
+          in: path
+          description: Network ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: domainId
+          in: path
+          description: Domain ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Domain not found
+security: 
+  - APIKeyAuth: []
+  - JWTAuth: []
