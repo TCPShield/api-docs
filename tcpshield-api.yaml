@@ -1,52 +1,265 @@
 openapi: 3.0.2
 info:
-  title: TCPShield API [WIP]
+  title: TCPShield API
   version: '1.0'
+  description: |
+    This is the official documentation for the REST endpoints of TCPShield.
+    Information regarding this API can be found 
+    [here](https://docs.tcpshield.com/premium-features/tcpshield-api).
 servers:
-  - url: 'https://api.tcpshield.com/v1'
+  - url: 'https://api.tcpshield.com/'
 components:
   securitySchemes:
     APIKeyAuth:
       type: apiKey
       name: X-API-Key
       in: header
-    JWTAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
+  schemas:
+    CreateNetwork:
+      type: object
+      properties:
+        Name:
+          type: string
+    UpdateNetworkRequest:
+      type: object
+      properties:
+        Name:
+          type: string
+        connections_per_second_threshold:
+          type: integer
+        client_ban_seconds:
+          type: integer
+        client_allow_seconds:
+          type: integer
+        mitigation_message:
+          type: string
+    NetworkResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        Premium:
+          type: boolean
+        protected_cname:
+          type: string
+        txt_verification:
+          type: string
+        connections_per_second_threshold:
+          type: integer
+        client_ban_seconds:
+          type: integer
+        client_allow_seconds:
+          type: integer
+        mitigation_message:
+          type: string
+        updated_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+    BackendSetResponse:
+      type: object
+      properties:
+        name:
+          type: string
+        active:
+          type: boolean
+        updated_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        backends:
+          type: array
+          items:
+            type: string
+    CreateBackendSetRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        backends:
+          type: array
+          items:
+            type: string
+    CreateBackendSetResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+    UpdateBackendSetRequest:
+      type: object
+      properties:
+        name: 
+          type: string
+        backends:
+          type: array
+          items:
+            type: string
+    UserSummaryResponse:
+      type: object
+      properties:
+        firstname:
+         type: string
+        lastname:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        balance:
+          type: number
+          format: float
+        plan_id:
+          type: integer
+        plan_name:
+          type: string
+    UpdateUserGeneralSettings:
+      type: object
+      properties:
+        firstname:
+          type: string
+        lastname:
+          type: string
+        phone:
+          type: string
+    DomainResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        backend_set_id:
+          type: integer
+        bac:
+          type: boolean
+        verified:
+          type: boolean
+        updated_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+    CreateDomainRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        backend_set_id:
+          type: integer
+        bac:
+          type: boolean
+    UpdateDomainRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        backend_set_id:
+          type: integer
+        bac:
+          type: boolean
+    CreateDomainResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+    PreVerifyDomainRequest:
+      type: object
+      properties:
+        domain_name:
+          type: string
+    SubUserResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+          format: email
+        full_name: 
+          type: string
+        verified:
+          type: boolean
+        perms:
+          type: object
+          properties:
+            read_network:
+              type: boolean
+            update_network:
+              type: boolean
+            delete_network:
+              type: boolean
+            create_network_user:
+              type: boolean
+            read_network_user:
+              type: boolean
+            update_network_user:
+              type: boolean
+            delete_network_user:
+              type: boolean
+            create_domains:
+              type: boolean
+            read_domains:
+              type: boolean
+            update_domains:
+              type: boolean
+            delete_domains:
+              type: boolean
+            create_backends:
+              type: boolean
+            read_backends:
+              type: boolean
+            update_backends:
+              type: boolean   
+            delete_backends:
+              type: boolean   
+            updated_at:
+              type: string
+              format: date-time
+            created_at:
+              type: string
+              format: date-time
+tags:
+  - name: Network
+    description: Network abiliites 
+  - name: Domain
+    description: CRUD operations to manage domains on TCPShield
+  - name: Backends
+    description: Abilites related to the management of hosts
 paths:
-  /user:
-    get:
-      description: 'Get current user information (name, phone number, etc)'
-      parameters: []
-      responses:
-        '200':
-          description: OK
-      security:
-        - JWTAuth: []
-    patch:
-      description: Update current user information
-      parameters: []
-      responses:
-        '200':
-          description: OK
-  /user/password:
-    patch:
-      description: Updates the current users password
-      parameters: []
-      responses:
-        '200':
-          description: OK
   /networks:
     get:
       description: Fetch list of available networks
       parameters: []
+      tags: 
+        - Network
       responses:
-        '200':
-          description: OK
+        '200': 
+          description: "OK"
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  $ref: '#/components/schemas/NetworkResponse'
     post:
       description: Add new network to the account
       parameters: []
+      tags:
+        - Network
+      requestBody:
+        description: Structure 
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateNetwork'
       responses:
         '200':
           description: OK
@@ -55,6 +268,8 @@ paths:
   '/networks/{networkId}':
     get:
       description: Fetch info for a single network
+      tags:
+        - Network
       parameters:
         - name: networkId
           in: path
@@ -66,10 +281,16 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/NetworkResponse'
         '404':
           description: Network not found
     patch:
       description: Update information on a network
+      tags:
+        - Network
       parameters:
         - name: networkId
           in: path
@@ -78,6 +299,12 @@ paths:
           schema:
             type: integer
             format: int64
+      requestBody:
+        description: Structure 
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateNetworkRequest'
       responses:
         '200':
           description: OK
@@ -87,6 +314,8 @@ paths:
           description: Network not found
     delete:
       description: Delete a network
+      tags:
+        - Network
       parameters:
         - name: networkId
           in: path
@@ -105,10 +334,12 @@ paths:
   '/networks/{networkId}/domains':
     get:
       description: Fetch a list of domains attached to a network
+      tags:
+        - Domain
       parameters:
         - name: networkId
           in: path
-          description: Network ID
+          description: Network ID 
           required: true
           schema:
             type: integer
@@ -116,8 +347,16 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/DomainResponse'
     post:
       description: Add a domain to a network
+      tags:
+        - Domain
       parameters:
         - name: networkId
           in: path
@@ -126,9 +365,15 @@ paths:
           schema:
             type: integer
             format: int64
+      requestBody:
+        description: Structure 
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDomainRequest'
       responses:
         '200':
-          description: OK
+          description: Created
         '403':
           description: Permission denied to edit this network
         '409':
@@ -136,6 +381,8 @@ paths:
   '/networks/{networkId}/domains/{domainId}':
     get:
       description: Fetch a single domain
+      tags:
+        - Domain
       parameters:
         - name: networkId
           in: path
@@ -154,9 +401,15 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/DomainResponse'
         '404':
           description: Domain not found
     patch:
+      tags:
+        - Domain
       description: Update a domain attached to a network
       parameters:
         - name: networkId
@@ -173,6 +426,12 @@ paths:
           schema:
             type: integer
             format: int64
+      requestBody:
+        description: Structure 
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDomainRequest'
       responses:
         '200':
           description: OK
@@ -182,6 +441,8 @@ paths:
           description: Domain not found
     delete:
       description: Delete a domain attached to a network
+      tags:
+        - Domain
       parameters:
         - name: networkId
           in: path
@@ -202,6 +463,184 @@ paths:
           description: OK
         '404':
           description: Domain not found
+  '/networks/{networkId}/domains/preverify':
+    post:
+      description: Helper method to check if a domain is already verified before adding.
+      tags:
+        - Domain
+      parameters:
+        - name: networkId
+          in: path
+          description: Network ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Structure 
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PreVerifyDomainRequest'
+      responses:
+        '200':
+          description: Standard API response to check if domain is verified or not. 
+        '404':
+          description: Network not found
+  '/networks/{networkId}/domains/{domainID}/verify':
+    get:
+      description: Helper method to check if a domain is already verified before adding.
+      tags:
+        - Domain
+      parameters:
+        - name: networkId
+          in: path
+          description: Network ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: domainID
+          in: path
+          description: Domain ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Standard API response to check if domain is verified or not. 
+        '404':
+          description: Domain not found
+  '/networks/{networkId}/backendSets':
+    get:
+      description: List backend sets for a network
+      tags:
+        - Backends
+      parameters:
+        - name: networkId
+          in: path
+          description: Network ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/DomainResponse'
+        '404':
+          description: Network not found
+    post:
+      description: Create a new backend set
+      tags:
+        - Backends
+      parameters:
+        - name: networkId
+          in: path
+          description: Network ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Structure 
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBackendSetRequest'
+      responses:
+        '200':
+          description: Successfully Created
+        '404':
+          description: Network not found
+  '/networks/{networkId}/backendSets/{setId}':
+    get:
+      description: Get information about a backend set
+      tags:
+        - Backends
+      parameters:
+        - name: networkId
+          in: path
+          description: Network ID
+          required: true
+          schema:
+            type: integer
+            format: setId
+        - name: setId
+          in: path
+          description: Domain ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/BackendSetResponse'
+        '404':
+          description: Domain not found
+    patch:
+      description: Update backend sets
+      tags:
+        - Backends
+      parameters:
+        - name: networkId
+          in: path
+          description: Network ID
+          required: true
+          schema:
+            type: integer
+            format: setId
+        - name: setId
+          in: path
+          description: Domain ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Structure 
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateBackendSetRequest'
+      responses:
+        '200':
+          description: Succesfully Updated
+        '404':
+          description: Domain not found
+    delete:
+      description: Delete a set of backends.
+      tags:
+        - Backends
+      parameters:
+        - name: networkId
+          in: path
+          description: Network ID
+          required: true
+          schema:
+            type: integer
+            format: setId
+        - name: setId
+          in: path
+          description: Domain ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Deleted
+        '404':
+          description: Domain not found
 security: 
   - APIKeyAuth: []
-  - JWTAuth: []
