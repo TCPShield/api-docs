@@ -5,7 +5,7 @@ info:
   description: |
     This is the official documentation for the REST endpoints of TCPShield.
     Information regarding this API can be found 
-    [here](https://docs.tcpshield.com/premium-features/tcpshield-api).
+    [here](https://docs.tcpshield.com/premium-features).
 servers:
   - url: 'https://api.tcpshield.com/'
 components:
@@ -18,12 +18,12 @@ components:
     CreateNetwork:
       type: object
       properties:
-        Name:
+        name:
           type: string
     UpdateNetworkRequest:
       type: object
       properties:
-        Name:
+        name:
           type: string
         connections_per_second_threshold:
           type: integer
@@ -40,7 +40,7 @@ components:
           type: integer
         name:
           type: string
-        Premium:
+        premium:
           type: boolean
         protected_cname:
           type: string
@@ -54,29 +54,32 @@ components:
           type: integer
         mitigation_message:
           type: string
-        updated_at:
-          type: string
-          format: date-time
-        created_at:
-          type: string
-          format: date-time
-    BackendSetResponse:
-      type: object
-      properties:
-        name:
-          type: string
-        active:
+        vpn_block:
           type: boolean
+        webhook_url:
+          type: string
+        attack_emails:
+          type: boolean
+        verification_server:
+          type: boolean
+        antivpn_kick_msg:
+          type: string
+        forward_true_slp:
+          type: boolean
+        offline_motd_enabled:
+          type: boolean
+        offline_motd:
+          type: string
+        offline_kick_message:
+          type: string
+        offline_favicon:
+          type: string
         updated_at:
           type: string
           format: date-time
         created_at:
           type: string
           format: date-time
-        backends:
-          type: array
-          items:
-            type: string
     CreateBackendSetRequest:
       type: object
       properties:
@@ -86,6 +89,13 @@ components:
           type: array
           items:
             type: string
+        proxy_protocol:
+
+          type: boolean
+        vulcan_ac_enabled:
+          type: boolean
+        load_balancing_mode:
+          type: integer
     CreateBackendSetResponse:
       type: object
       properties:
@@ -100,34 +110,6 @@ components:
           type: array
           items:
             type: string
-    UserSummaryResponse:
-      type: object
-      properties:
-        firstname:
-         type: string
-        lastname:
-          type: string
-        email:
-          type: string
-          format: email
-        phone:
-          type: string
-        balance:
-          type: number
-          format: float
-        plan_id:
-          type: integer
-        plan_name:
-          type: string
-    UpdateUserGeneralSettings:
-      type: object
-      properties:
-        firstname:
-          type: string
-        lastname:
-          type: string
-        phone:
-          type: string
     DomainResponse:
       type: object
       properties:
@@ -141,6 +123,238 @@ components:
           type: boolean
         verified:
           type: boolean
+        updated_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+    IPFirewallResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        cidr:
+          type: string
+        whitelist:
+          type: boolean
+        updated_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+    CreateIPFirewallRequest:
+      type: object
+      properties:
+        cidr:
+          type: string
+        whitelist:
+          type: boolean
+    ASNFirewallResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        asn:
+          type: integer
+        whitelist:
+          type: boolean
+        updated_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+    CreateASNFirewallRequest:
+      type: object
+      properties:
+        asn:
+          type: integer
+        whitelist:
+          type: boolean
+    CountryFirewallResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        country_id:
+          type: integer
+        country_code:
+          type: string
+        country_name:
+          type: string
+        whitelist:
+          type: boolean
+        updated_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+    CreateCountryFirewallRequest:
+      type: object
+      properties:
+        country_id:
+          type: integer
+        whitelist:
+          type: boolean
+    BedrockTunnelsResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        backend_set_id:
+          type: integer
+        location:
+          type: string
+        proxy_protocol:
+          type: integer
+        allocated_cname:
+          type: string
+        updated_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+    CreateBedrockTunnelsRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        backend_set_id:
+          type: integer
+        location:
+          type: string
+        proxy_protocol:
+          type: integer
+    BedrockTunnelsLocationsResponse:
+      type: string
+    AnalyticsBounceRateResponse:
+      type: object
+      properties:
+        value:
+          type: number
+          format: float
+    AnalyticsTopDomainsResponse:
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: integer
+    AnalyticsUniqueUsersResponse:
+      type: object
+      properties:
+        value:
+          type: integer
+    AnalyticsRetentionResponse:
+      type: object
+    AnalyticsMitigatedCountResponse:
+      type: object
+      properties:
+        value:
+          type: integer
+    AnalyticsMcVersionBreakdownResponse:
+      type: object
+    UserSummaryResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        status:
+          type: integer
+        data:
+          type: object
+          properties:
+            id:
+              type: integer
+            firstname:
+              type: string
+            lastname:
+              type: string
+            email:
+              type: string
+              format: email
+            phone:
+              type: string
+            account_limited:
+              type: boolean
+            balance:
+              type: number
+              format: float
+            plan_id:
+              type: integer
+            plan_name:
+              type: string
+            plan_expiry:
+              type: string
+              format: date-time
+            two_factor_enabled:
+              type: boolean
+            verified:
+              type: boolean
+            notifications:
+              type: array
+              items:
+                type: string
+            commit_level:
+              type: string
+            updated_at:
+              type: string
+              format: date-time
+            created_at:
+              type: string
+              format: date-time
+    UpdateUserEmailRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        emailconfirm:
+          type: string
+    UserApiKeyResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            key:
+              type: string
+    UpdateUserGeneralInfoRequest:
+      type: object
+      properties:
+        firstname:
+          type: string
+        lastname:
+          type: string
+        phone:
+          type: string
+    UpdateUserPasswordRequest:
+      type: object
+      properties:
+        old_password:
+          type: string
+        new_password:
+          type: string
+        new_password_confirm:
+          type: string
+    BackendSetResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        proxy_protocol:
+          type: boolean
+        vulcan_ac_enabled:
+          type: boolean
+        load_balancing_mode:
+          type: integer
         updated_at:
           type: string
           format: date-time
@@ -228,11 +442,23 @@ components:
               format: date-time
 tags:
   - name: Network
-    description: Network abiliites 
+    description: Network abilities
   - name: Domain
     description: CRUD operations to manage domains on TCPShield
   - name: Backends
-    description: Abilites related to the management of hosts
+    description: Abilities related to the management of hosts
+  - name: User
+    description: User abilities
+  - name: Firewall
+    description: Network firewall abilities
+  - name: AsnFirewall
+    description: Network ASN firewall firewall abilities
+  - name: CountryFirewall
+    description: Network country firewall abilities
+  - name: BedrockTunnels
+    description: Bedrock tunnels abilities
+  - name: Analytics
+    description: Analytics abilities
 paths:
   /networks:
     get:
@@ -408,9 +634,9 @@ paths:
         '404':
           description: Domain not found
     patch:
+      description: Update a domain attached to a network
       tags:
         - Domain
-      description: Update a domain attached to a network
       parameters:
         - name: networkId
           in: path
@@ -533,7 +759,7 @@ paths:
               schema: 
                 type: array
                 items:
-                  $ref: '#/components/schemas/DomainResponse'
+                  $ref: '#/components/schemas/BackendSetResponse'
         '404':
           description: Network not found
     post:
@@ -587,7 +813,7 @@ paths:
               schema: 
                 $ref: '#/components/schemas/BackendSetResponse'
         '404':
-          description: Domain not found
+          description: Backend set not found
     patch:
       description: Update backend sets
       tags:
@@ -642,5 +868,593 @@ paths:
           description: Deleted
         '404':
           description: Domain not found
+  '/networks/{networkId}/firewall':
+    get:
+      description: Get information about a network firewalls
+      tags:
+        - Firewall
+      parameters:
+        - name: networkId
+          in: path
+          description: Network ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IPFirewallResponse'
+        '404':
+          description: Firewall not found
+    post:
+      description: Add network firewall
+      tags:
+        - Firewall
+      parameters:
+        - name: networkId
+          in: path
+          description: Network ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Structure
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateIPFirewallRequest'
+      responses:
+        '200':
+          description: Successfully Updated
+        '500':
+          description: Firewall not created
+  '/networks/{networkId}/firewall/{firewallEntryID}':
+    delete:
+      description: Delete a firewall
+      tags:
+        - Firewall
+      parameters:
+        - name: networkId
+          in: path
+          description: Network ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: firewallEntryID
+          in: path
+          description: EntryID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Firewall not found
+  '/networks/{networkId}/asnFirewall':
+    get:
+      description: Get information about a network ASN firewalls
+      tags:
+        - AsnFirewall
+      parameters:
+        - name: networkId
+          in: path
+          description: Network ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ASNFirewallResponse'
+        '404':
+          description: ASN Firewall not found
+    post:
+      description: Add network ASN firewall
+      tags:
+        - AsnFirewall
+      parameters:
+        - name: networkId
+          in: path
+          description: Network ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Structure
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateASNFirewallRequest'
+      responses:
+        '200':
+          description: Successfully Updated
+        '500':
+          description: ASN Firewall not created
+  '/networks/{networkId}/asnFirewall/{firewallEntryID}':
+    delete:
+      description: Delete a ASN firewall
+      tags:
+        - AsnFirewall
+      parameters:
+        - name: networkId
+          in: path
+          description: Network ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: firewallEntryID
+          in: path
+          description: EntryID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: ASN Firewall not found
+  '/networks/{networkId}/countryFirewall':
+    get:
+      description: Get information about a network Country firewalls
+      tags:
+        - CountryFirewall
+      parameters:
+        - name: networkId
+          in: path
+          description: Network ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CountryFirewallResponse'
+        '404':
+          description: Country Firewall not found
+    post:
+      description: Add network Country firewall
+      tags:
+        - CountryFirewall
+      parameters:
+        - name: networkId
+          in: path
+          description: Network ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Structure
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCountryFirewallRequest'
+      responses:
+        '200':
+          description: Successfully Updated
+        '500':
+          description: Country Firewall not created
+  '/networks/{networkId}/countryFirewall/{firewallEntryID}':
+    delete:
+      description: Delete a Country firewall
+      tags:
+        - CountryFirewall
+      parameters:
+        - name: networkId
+          in: path
+          description: Network ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: firewallEntryID
+          in: path
+          description: EntryID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Country Firewall not found
+  '/networks/{networkId}/bedrockTunnels':
+    get:
+      description: Get information about a network bedrock tunnels
+      tags:
+        - BedrockTunnels
+      parameters:
+        - name: networkId
+          in: path
+          description: Network ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BedrockTunnelsResponse'
+        '404':
+          description: Bedrock Tunnels not found
+    post:
+      description: Add network Bedrock Tunnels
+      tags:
+        - BedrockTunnels
+      parameters:
+        - name: networkId
+          in: path
+          description: Network ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Structure
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBedrockTunnelsRequest'
+      responses:
+        '200':
+          description: Successfully Updated
+        '500':
+          description: Bedrock Tunnels not created
+  '/networks/{networkId}/bedrockTunnels/locations':
+    get:
+      description: List available bedrock tunnel locations
+      tags:
+        - BedrockTunnels
+      parameters:
+        - name: networkId
+          in: path
+          description: Network ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BedrockTunnelsLocationsResponse'
+        '404':
+          description: Bedrock Tunnels not found
+  '/networks/{networkId}/bedrockTunnels/{tunnelId}':
+    get:
+      description: Get information about a network bedrock tunnel
+      tags:
+        - BedrockTunnels
+      parameters:
+        - name: networkId
+          in: path
+          description: Network ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: tunnelId
+          in: path
+          description: Tunnel ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BedrockTunnelsResponse'
+        '404':
+          description: Bedrock Tunnel not found
+    patch:
+      description: Update network Bedrock Tunnel
+      tags:
+        - BedrockTunnels
+      parameters:
+        - name: networkId
+          in: path
+          description: Network ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: tunnelId
+          in: path
+          description: Tunnel ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Structure
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBedrockTunnelsRequest'
+      responses:
+        '200':
+          description: Successfully Updated
+        '500':
+          description: Bedrock Tunnels not updated
+    delete:
+      description: Delete a bedrock tunnels
+      tags:
+        - BedrockTunnels
+      parameters:
+        - name: networkId
+          in: path
+          description: Network ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: tunnelId
+          in: path
+          description: Tunnel ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Bedrock Tunnel not found
+  '/networks/{networkId}/analytics/bounceRate':
+    get:
+      description: List analytics bounce rate
+      tags:
+        - Analytics
+      parameters:
+        - name: networkId
+          in: path
+          description: Network ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsBounceRateResponse'
+        '404':
+          description: Network not found
+  '/networks/{networkId}/analytics/topDomains':
+    get:
+      description: List available analytics top domains
+      tags:
+        - Analytics
+      parameters:
+        - name: networkId
+          in: path
+          description: Network ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsTopDomainsResponse'
+        '404':
+          description: Network not found
+  '/networks/{networkId}/analytics/uniqueUsers':
+    get:
+      description: List available analytics unique users
+      tags:
+        - Analytics
+      parameters:
+        - name: networkId
+          in: path
+          description: Network ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsUniqueUsersResponse'
+        '404':
+          description: Network not found
+  '/networks/{networkId}/analytics/retention':
+    get:
+      description: List available analytics retention
+      tags:
+        - Analytics
+      parameters:
+        - name: networkId
+          in: path
+          description: Network ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsRetentionResponse'
+        '404':
+          description: Network not found
+  '/networks/{networkId}/analytics/mitigatedCount':
+    get:
+      description: List available analytics mitigated count
+      tags:
+        - Analytics
+      parameters:
+        - name: networkId
+          in: path
+          description: Network ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsMitigatedCountResponse'
+        '404':
+          description: Network not found
+  '/networks/{networkId}/analytics/mcVersionBreakdown':
+    get:
+      description: List available analytics mc version breakdown
+      tags:
+        - Analytics
+      parameters:
+        - name: networkId
+          in: path
+          description: Network ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsMcVersionBreakdownResponse'
+        '404':
+          description: Network not found
+  '/user/summary':
+    get:
+      description: Get current user information
+      tags:
+        - User
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSummaryResponse'
+        '401':
+          description: Unauthorized
+  '/user/email':
+    patch:
+      description: Update current user email
+      tags:
+        - User
+      requestBody:
+        description: Structure
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserEmailRequest'
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+  '/user/apikey':
+    get:
+      description: Get current user api key
+      tags:
+        - User
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserApiKeyResponse'
+        '401':
+          description: Unauthorized
+  '/user/apikey/regenerate':
+    post:
+      description: Regenerate current user api key
+      tags:
+        - User
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+  '/user/updateGeneralInfo':
+    post:
+      description: Update current user general info
+      tags:
+        - User
+      requestBody:
+        description: Structure
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserGeneralInfoRequest'
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+  '/user/password':
+    post:
+      description: Update current user password
+      tags:
+        - User
+      requestBody:
+        description: Structure
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserPasswordRequest'
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
 security: 
   - APIKeyAuth: []
