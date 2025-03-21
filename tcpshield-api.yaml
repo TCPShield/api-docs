@@ -440,6 +440,281 @@ components:
             created_at:
               type: string
               format: date-time
+    SentryTunnelResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: uint
+          description: Unique identifier for the sentry tunnel
+        name:
+          type: string
+          description: Name of the sentry tunnel
+        endpoint_public_key:
+          type: string
+          description: Public key of the endpoint
+        endpoint_private_key:
+          type: string
+          description: Private key of the endpoint
+        endpoint_peer:
+          type: string
+          description: Peer endpoint information
+        bind_port:
+          type: integer
+          description: Port to which the tunnel is bound
+        location:
+          type: string
+          description: Location of the sentry tunnel
+        current_bandwidth_usage:
+          type: integer
+          format: uint64
+          description: Current bandwidth usage in bytes
+        month_bandwidth_usage:
+          type: integer
+          format: uint64
+          description: Bandwidth usage for the current month in bytes
+        cumulative_bandwidth_usage:
+          type: integer
+          format: uint64
+          description: Total bandwidth usage in bytes
+        created_at:
+          type: string
+          format: date-time
+          description: Timestamp when the tunnel was created
+        updated_at:
+          type: string
+          format: date-time
+          description: Timestamp when the tunnel was last updated
+        ingress:
+          type: integer
+          format: uint64
+          description: Ingress bandwidth usage in bytes
+        egress:
+          type: integer
+          format: uint64
+          description: Egress bandwidth usage in bytes
+        tunnel_addresses:
+          type: array
+          items:
+            $ref: "#/components/schemas/TunnelAddressResponse"
+          description: List of tunnel addresses associated with the tunnel
+        tunnel_users:
+          type: array
+          items:
+            $ref: "#/components/schemas/TunnelUserResponse"
+          description: List of users associated with the tunnel
+    TunnelAddressResponse:
+      type: object
+      properties:
+        ip_address_public:
+          type: string
+          description: Public IP address of the tunnel
+        ip_address_private:
+          type: string
+          description: Private IP address of the tunnel
+        peer_ip_address_private:
+          type: string
+          description: Private IP address of the tunnel peer
+        location:
+          type: string
+          description: Location associated with the tunnel address
+    TunnelUserResponse:
+      type: object
+      properties:
+        verified:
+          type: boolean
+          nullable: true
+          description: Indicates if the user is verified
+        tunnel_id:
+          type: integer
+          format: uint
+          description: ID of the associated tunnel
+        user_id:
+          type: integer
+          format: uint
+          description: ID of the user associated with the tunnel
+        permission_id:
+          type: integer
+          format: uint
+          description: ID of the permission level assigned to the user
+    SentryTunnelLocations:
+      type: object
+      additionalProperties:
+        type: string
+      example:
+        ANY: "Anycast"
+      description: A mapping of location identifiers to their human-readable names.
+    SentryTunnelSetupScriptResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          description: Status code of the response
+        data:
+          type: string
+          description: The startup script content
+    SentryTunnelAnalyticsResponse:
+      type: object
+      properties:
+        egress:
+          type: array
+          items:
+            $ref: "#/components/schemas/Float64ValueTime"
+          description: Egress bandwidth data points
+        ingress:
+          type: array
+          items:
+            $ref: "#/components/schemas/Float64ValueTime"
+          description: Ingress bandwidth data points
+        max:
+          type: number
+          format: float
+          description: Maximum recorded value
+    Float64ValueTime:
+      type: object
+      properties:
+        value:
+          type: number
+          format: float
+          description: The recorded value
+        time:
+          type: string
+          format: date-time
+          description: The timestamp of the recorded value
+    SentryTunnelFirewallResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: uint
+          description: Unique identifier for the firewall rule
+        start_port:
+          type: integer
+          format: uint
+          description: Starting port of the firewall rule
+        end_port:
+          type: integer
+          format: uint
+          description: Ending port of the firewall rule
+        is_active:
+          type: boolean
+          description: Indicates if the firewall rule is active
+        internal_name:
+          type: string
+          description: Internal name of the firewall rule
+        human_name:
+          type: string
+          description: Human-readable name of the firewall rule
+        filter_id:
+          type: integer
+          format: uint
+          description: Identifier of the associated filter
+        created_at:
+          type: string
+          format: date-time
+          description: Timestamp when the firewall rule was created
+        updated_at:
+          type: string
+          format: date-time
+          description: Timestamp when the firewall rule was last updated
+    CreateSentryTunnelRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the sentry tunnel
+          minLength: 3
+          maxLength: 50
+        endpoint_peer:
+          type: string
+          description: Peer endpoint information
+          maxLength: 128
+        location:
+          type: string
+          description: Location of the sentry tunnel (optional)
+        bind_port:
+          type: integer
+          description: Port to which the tunnel is bound
+          minimum: 1
+          maximum: 65535
+      required:
+        - name
+        - endpoint_peer
+        - bind_port
+    UpdateSentryTunnelRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the sentry tunnel
+          minLength: 3
+          maxLength: 50
+        endpoint_public_key:
+          type: string
+          description: Public key of the endpoint
+          maxLength: 64
+        endpoint_peer:
+          type: string
+          description: Peer endpoint information
+          maxLength: 128
+        bind_port:
+          type: integer
+          description: Port to which the tunnel is bound
+          minimum: 1
+          maximum: 65535
+      required:
+        - name
+        - endpoint_public_key
+        - endpoint_peer
+        - bind_port
+    CreateSentryTunnelFirewallRequest:
+      type: object
+      properties:
+        start_port:
+          type: integer
+          description: Starting port of the firewall rule
+          minimum: 1
+          maximum: 65535
+        end_port:
+          type: integer
+          description: Ending port of the firewall rule
+          minimum: 1
+          maximum: 65535
+        filter_id:
+          type: integer
+          description: Identifier of the associated filter
+          minimum: 1
+        is_active:
+          type: boolean
+          description: Indicates if the firewall rule is active
+      required:
+        - start_port
+        - end_port
+        - filter_id
+    UpdateSentryTunnelFirewallRequest:
+      type: object
+      properties:
+        start_port:
+          type: integer
+          description: Starting port of the firewall rule
+          minimum: 1
+          maximum: 65535
+        end_port:
+          type: integer
+          description: Ending port of the firewall rule
+          minimum: 1
+          maximum: 65535
+        filter_id:
+          type: integer
+          description: Identifier of the associated filter
+          minimum: 1
+        is_active:
+          type: boolean
+          description: Indicates if the firewall rule is active
+      required:
+        - start_port
+        - end_port
+        - filter_id
 tags:
   - name: Network
     description: Network abilities
@@ -459,6 +734,8 @@ tags:
     description: Bedrock tunnels abilities
   - name: Analytics
     description: Analytics abilities
+  - name: SentryTunnels
+    description: Sentry tunnel abilities
 paths:
   /networks:
     get:
@@ -1456,5 +1733,293 @@ paths:
           description: OK
         '401':
           description: Unauthorized
+  '/tunnels':
+    get:
+      summary: List all sentry tunnels
+      parameters: []
+      tags:
+        - SentryTunnels
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SentryTunnelResponse'
+    post:
+      summary: Add a new sentry tunnel
+      parameters: []
+      tags:
+        - SentryTunnels
+      requestBody:
+        description: Structure
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSentryTunnelRequest'
+      responses:
+        '201':
+          description: 'Tunnel created'
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SentryTunnelResponse'
+  '/tunnels/locations':
+    get:
+      summary: List tunnel locations
+      parameters: []
+      tags:
+        - SentryTunnels
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SentryTunnelLocations'
+  '/tunnels/getBindPort':
+    get:
+      summary: Get bind port for a tunnel
+      parameters: []
+      tags:
+        - SentryTunnels
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: integer
+  '/tunnels/{tunnelID}/setupScript':
+    get:
+      summary: Get setup script for a tunnel
+      parameters:
+        - name: tunnelID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      tags:
+        - SentryTunnels
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SentryTunnelSetupScriptResponse'
+  '/tunnels/{tunnelID}/analytics':
+    get:
+      summary: Get analytics for a tunnel
+      parameters:
+        - name: tunnelID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      tags:
+        - SentryTunnels
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SentryTunnelAnalyticsResponse'
+  '/tunnels/{tunnelID}':
+    get:
+      summary: Get a specific sentry tunnel
+      parameters:
+        - name: tunnelID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      tags:
+        - SentryTunnels
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SentryTunnelResponse'
+        '404':
+          description: Sentry tunnel not found
+    put:
+      summary: Update a specific sentry tunnel
+      parameters:
+        - name: tunnelID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      tags:
+        - SentryTunnels
+      requestBody:
+        description: Structure
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSentryTunnelRequest'
+      responses:
+        '200':
+          description: Tunnel updated
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SentryTunnelResponse'
+    delete:
+      summary: Delete a specific sentry tunnel
+      parameters:
+        - name: tunnelID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      tags:
+        - SentryTunnels
+      responses:
+        '200':
+          description: Tunnel deleted
+  '/tunnelFilters':
+    get:
+      summary: List all tunnel filters
+      parameters: []
+      tags:
+        - SentryTunnels
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SentryTunnelFirewallResponse'
+  '/tunnel/{tunnelID}/tunnelFirewall':
+    post:
+      summary: Add a firewall rule to a tunnel
+      parameters:
+        - name: tunnelID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      tags:
+        - SentryTunnels
+      requestBody:
+        description: Structure
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSentryTunnelFirewallRequest'
+      responses:
+        '201':
+          description: Firewall rule added
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SentryTunnelFirewallResponse'
+  '/tunnel/{tunnelID}/tunnelFirewalls':
+    get:
+      summary: List firewall rules for a tunnel
+      parameters:
+        - name: tunnelID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      tags:
+        - SentryTunnels
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SentryTunnelFirewallResponse'
+  '/tunnelFirewall/{filterID}':
+    get:
+      summary: Get details of a firewall filter
+      parameters:
+        - name: filterID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      tags:
+        - SentryTunnels
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SentryTunnelFirewallResponse'
+        '404':
+          description: Firewall filter not found
+    put:
+      summary: Update a firewall filter
+      parameters:
+        - name: filterID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      tags:
+        - SentryTunnels
+      requestBody:
+        description: Structure
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSentryTunnelFirewallRequest'
+      responses:
+        '200':
+          description: Filter updated
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SentryTunnelFirewallResponse'
+    delete:
+      summary: Delete a firewall filter
+      parameters:
+        - name: filterID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      tags:
+        - SentryTunnels
+      responses:
+        '200':
+          description: Filter deleted
+
 security: 
   - APIKeyAuth: []
